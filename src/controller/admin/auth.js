@@ -1,80 +1,80 @@
-const User = require("../../models/user");
-const jwt = require("jsonwebtoken");
-const { use } = require("../../routes/admin/auth");
+const User = require('../../models/user');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const shortid = require('shortid');
 
 exports.signup = (req, res) => {
-    User.findOne({
-        email: req.body.email
-    }).exec((error, user) => {
-        if(user) {
-           return res.status(400).json({
-                message : "Admin already exists"
-            });
-        }
-    });
+    User.findOne({ email: req.body.email })
+    .exec(async (error, user) => {
+        if(user) return res.status(400).json({
+            message: 'Admin already registered'
+        });
 
-        const newUser = new User({ 
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: req.body.password,
+        const {
+            firstName,
+            lastName,
+            email,
+            password
+        } = req.body;
+        const hash_password = await bcrypt.hash(password, 10);
+        const _user = new User({ 
+            firstName, 
+            lastName, 
+            email, 
+            hash_password,
+            username: shortid.generate(),
             role: 'admin'
-    });
+        });
 
-    newUser.save((error, data) => {
-        if(error) {
-            console.log(error);
-            res.status(400).json({
-                message: "Something went wrong"
-            });
-        }
-        if(data) {
-            res.status(201).json({
-                message: "Admin created"
-            });
-        }
+        _user.save((error, data) => {
+            if(error){
+                return res.status(400).json({
+                    message: 'Something went wrong'
+                });
+            }
+
+            if(data){
+                return res.status(201).json({
+                    message: 'Admin created Successfully..!'
+                })
+            }
+        });
+
+
+
     });
 }
 
 exports.signin = (req, res) => {
-    User.findOne({ email: req.body.email 
-    }).exec((error, user) => {
-        if(error) {
-            return res.status(400).json({error})
-        }
-        if(user) {
-            if(user.authenticate(req.body.password) && user.role === 'admin') {
-                const token = jwt.sign({ _id: user._id, role: user.role }, 'mernSecret', {expiresIn: '1h'});
+    User.findOne({ email: req.body.email })
+    .exec((error, user) => {
+        if(error) return res.status(400).json({ error });
+        if(user){
+
+            if(user.authenticate(req.body.password) && user.role === 'admin'){
+                const token = jwt.sign({_id: user._id, role: user.role}, 'mernSecret', { expiresIn: '1d' });
                 const { _id, firstName, lastName, email, role, fullName } = user;
-                res.cookie('token', token, { expiresIn: '1h' });
+                res.cookie('token', token, { expiresIn: '1d' });
                 res.status(200).json({
                     token,
-                    user: {
-                        _id,
-                        firstName,
-                        lastName,
-                        email,
-                        role,
-                        fullName
-                    }
+                    user: {_id, firstName, lastName, email, role, fullName}
                 });
-            } else {
+            }else{
                 return res.status(400).json({
-                    message: "Invalid Password"
-                });
+                    message: 'Invalid Password'
+                })
             }
-        } else {
-            return res.status(400).json({
-                message: "something went wrong!"
-            })
+
+        }else{
+            return res.status(400).json({message: 'Something went wrong'});
         }
     });
 }
 
 
-exports.logout = (req, res) => {
+exports.signout = (req, res) => {
     res.clearCookie('token');
     res.status(200).json({
-        message: 'Logout Successfull!'
+        message: 'Signout successfully...!'
     })
 }

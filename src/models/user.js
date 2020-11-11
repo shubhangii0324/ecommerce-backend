@@ -1,57 +1,62 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
-    firstName : {
+    firstName: {
         type: String,
         required: true,
         trim: true,
         min: 3,
         max: 20
-    },  
-    lastName : {
+    },
+    lastName: {
         type: String,
         required: true,
         trim: true,
         min: 3,
         max: 20
-    }, 
-    email : {
+    },
+    username: {
+        type: String,
+        trim: true,
+        min: 3,
+        max: 20
+    },
+    email: {
         type: String,
         required: true,
         trim: true,
         unique: true,
         lowercase: true
     },
-    hash_password : {
-        type: String,
-        required: true
+    hash_password: {
+        type: String
     },
-    role : {
+    role: {
         type: String,
         enum: ['user', 'admin'],
-        default: 'user'
+        default:'user'
     },
-    contactNumber : {
-        type: Number
-    },
-    profilePicture : {
-        type: String
-    }
+    contactNumber: { type: String },
+    pofilePicture: { type: String }
 }, { timestamps: true });
 
- userSchema.virtual('password').set(function(password){
-  this.hash_password = bcrypt.hashSync(password, 10);
- });
 
-userSchema.virtual('fullName').get(function(){
+// userSchema.virtual('password')
+// .set(function(password){
+//     this.hash_password = bcrypt.hashSync(password, 10);
+// });
+
+userSchema.virtual('fullName')
+.get(function(){
     return `${this.firstName} ${this.lastName}`;
 });
 
 userSchema.methods = {
-    authenticate : async function(password){
-        return await bcrypt.compareSync(password, this.hash_password)
+    authenticate: async function(password){
+        return await bcrypt.compare(password, this.hash_password);
     }
 }
 
-module.exports = mongoose.model("User", userSchema);
+
+module.exports = mongoose.model('User', userSchema);
