@@ -18,6 +18,16 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    cluster: { 
+        type: String, 
+        required: true, 
+        trim: true 
+    },
+    artisan: { 
+        type: String, 
+        required: true, 
+        trim: true 
+    },
     description: {
         type: String,
         required: true,

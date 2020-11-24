@@ -8,7 +8,7 @@ exports.createProduct = (req, res) => {
     //res.status(200).json( { file: req.files, body: req.body } );
 
     const {
-        name, price, description, category, quantity, createdBy
+        name, price, description, category, quantity, cluster, artisan, createdBy
     } = req.body;
     let productPictures = [];
 
@@ -24,6 +24,8 @@ exports.createProduct = (req, res) => {
         price: price,
         quantity: quantity,
         description: description,
+        cluster: cluster,
+        artisan: artisan,
         productPictures: productPictures,
         category: category,
         createdBy: req.user._id

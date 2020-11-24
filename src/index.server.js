@@ -19,8 +19,9 @@ const couponRoutes = require('./routes/coupons');
 
 // mongodb://localhost:27017/ecomm
 // mongodb connection
+// `mongodb+srv://adminsf123:adminsf123@inventory.thgor.mongodb.net/ecommerce?retryWrites=true&w=majority`
 mongoose.connect(
-    `mongodb+srv://adminsf123:adminsf123@inventory.thgor.mongodb.net/ecommerce?retryWrites=true&w=majority`, 
+    `mongodb+srv://shubhi123:Sudha123@cluster0.spfw4.mongodb.net/ecommerce?retryWrites=true&w=majority`, 
     {
         useNewUrlParser: true, 
         useUnifiedTopology: true,
