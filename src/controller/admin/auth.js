@@ -1,7 +1,17 @@
 const User = require('../../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const shortid = require('shortid');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+
+
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth:{
+        api_key:"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"
+    }
+}))
 
 exports.signup = (req, res) => {
     User.findOne({ email: req.body.email })
@@ -34,9 +44,15 @@ exports.signup = (req, res) => {
             }
 
             if(data){
-                return res.status(201).json({
-                    message: 'Admin created Successfully..!'
+                transporter.sendMail({
+                    to: _user.email,
+                    from:"no-reply@sfconsultant.com",
+                    subject:"Registration Successfull",
+                    html: "<h1>Welcome to our ecommerce service</h1>"
                 })
+                    return res.status(201).json({
+                        message: 'Admin created Successfully..!'
+                    })
             }
         });
 
@@ -76,5 +92,34 @@ exports.signout = (req, res) => {
     res.clearCookie('token');
     res.status(200).json({
         message: 'Signout successfully...!'
+    })
+}
+
+exports.forgotPassword = (req, res) => {
+    crypto.randomBytes(32, (error, buffer) => {
+        if(error){
+            console.log(error);
+        }
+        const token = buffer.toString("hex")
+        User.findOne({email: req.body.email})
+        .then(_user => {
+            if(!_user){
+                return res.status(400).json({
+                    message: 'No user with the given email'
+                })
+            }
+            _user.resetToken = token
+            _user.expireToken = Date.now() + 3600000
+            _user.save().then((result) => {
+                transporter.sendMail({
+                    to: _user.email,
+                    from:"no-reply@sfconsultant.com",
+                    subject:"Password reset email",
+                    html: `<p>You requested for password reset</p>
+                           <h5>Click on this <a href="http://localhost:3000/admin/reset-password/${token}>link</a> to reset your password</h5>`
+                })
+                res.json({message: 'Check mail'})
+            })
+        })
     })
 }
