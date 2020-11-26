@@ -28,16 +28,14 @@ const productSchema = new mongoose.Schema({
         required: true 
     },
     gst: { 
-        type: Number, 
-        required: true 
+        type: Number
     },
     quantity: {
         type: Number,
         required: true
     },
     size: { 
-        type: String, 
-        required: true, 
+        type: String,  
         trim: true 
     },
     cluster: { 
