@@ -8,7 +8,7 @@ exports.createProduct = (req, res) => {
     //res.status(200).json( { file: req.files, body: req.body } );
 
     const {
-        name, mrpPrice, listPrice, gst, makingCost, size, description, category, quantity, cluster, artisan, createdBy
+        name, productCode, mrpPrice, listPrice, gst, makingCost, size, description, category, quantity, cluster, artisan, createdBy
     } = req.body;
     let productPictures = [];
 
@@ -19,6 +19,7 @@ exports.createProduct = (req, res) => {
     }
 
     const product = new Product({
+        productCode: productCode,
         name: name,
         slug: slugify(name),
         mrpPrice: mrpPrice,
