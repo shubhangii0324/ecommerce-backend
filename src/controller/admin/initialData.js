@@ -35,7 +35,7 @@ exports.initialData = async (req, res) => {
 
     const categories = await Category.find({}).exec();
     const products = await Product.find({})
-        .select('_id name price quantity slug description cluster artisan productPictures category')
+        .select('_id name mrpPrice listPrice gst makingCost size quantity slug description cluster artisan productPictures category')
         .populate({ path: 'category', select: '_id name' })
         .exec();
     const taxes = await Taxes.find({})

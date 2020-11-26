@@ -5,18 +5,40 @@ const productSchema = new mongoose.Schema({
         required: true, 
         trim: true 
     },
+    productCode: { 
+        type: String, 
+        required: true, 
+        trim: true 
+    },
     slug: { 
         type: String, 
         required: true, 
         unique: true 
     },
-    price: { 
+    mrpPrice: { 
+        type: Number, 
+        required: true 
+    },
+    listPrice: { 
+        type: Number, 
+        required: true 
+    },
+    makingCost: { 
+        type: Number, 
+        required: true 
+    },
+    gst: { 
         type: Number, 
         required: true 
     },
     quantity: {
         type: Number,
         required: true
+    },
+    size: { 
+        type: String, 
+        required: true, 
+        trim: true 
     },
     cluster: { 
         type: String, 
