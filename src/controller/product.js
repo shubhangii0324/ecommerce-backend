@@ -14,7 +14,7 @@ exports.createProduct = (req, res) => {
 
     if(req.files.length > 0){
         productPictures = req.files.map(file => {
-            return { img: file.filename }
+            return { img: file.location }
         });
     }
 
@@ -39,7 +39,7 @@ exports.createProduct = (req, res) => {
     product.save(((error, product) => {
         if(error) return res.status(400).json({ error });
         if(product){
-            res.status(201).json({ product });
+            res.status(201).json({ product, files: req.files });
         }
     }));
 

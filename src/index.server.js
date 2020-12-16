@@ -16,6 +16,9 @@ const taxRoutes = require('./routes/taxes');
 const userRoutes = require('./routes/user');
 const sellerRoutes = require('./routes/seller');
 const couponRoutes = require('./routes/coupons');
+const addressRoutes = require("./routes/address");
+const orderRoutes = require("./routes/order");
+const adminOrderRoute = require("./routes/admin/order.routes");
 
 // mongodb://localhost:27017/ecomm
 // mongodb connection
@@ -45,6 +48,9 @@ app.use('/api', taxRoutes);
 app.use('/api', userRoutes);
 app.use('/api', sellerRoutes);
 app.use('/api', couponRoutes);
+app.use("/api", addressRoutes);
+app.use("/api", orderRoutes);
+app.use("/api", adminOrderRoute);
 
 app.get("/", (req, res) => {
     res.send("Welcome to Ecommerce store");
